@@ -19,7 +19,7 @@ class UoSerializer(serializers.ModelSerializer):
     activity_kinds = JSONSerializerField() 
     class Meta:
         model = Tbluo
-        fields = ("id", "name", "activity_kinds")
+        fields = ("id", "name", "activity_kinds","address")
         lookup_field = 'id'
         extra_kwargs = {
             'url':{'lookup_field':'id'}

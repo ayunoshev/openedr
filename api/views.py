@@ -6,7 +6,28 @@ from rest_framework.response import Response
 from rest_framework import permissions
 from rest_framework import pagination
 from rest_framework import filters
-# Create your views here.
+from rest_framework import pagination
+
+class CustomPagination(pagination.LimitOffsetPagination):
+    default_limit = 10
+    limit_query_param = 'l'
+    offset_query_param = 'o'
+    max_limit = 100
+    def get_paginated_response(self, data):
+        return Response({
+            'results': data
+        })
+
+class CustomPagination2(pagination.PageNumberPagination):
+    def get_paginated_response(self, data):
+        return Response({
+            'links': {
+                'next': self.get_next_link(),
+                'previous': self.get_previous_link()
+            },
+           # 'count': self.page.paginator.count,
+            'results': data
+        })
 
 class PageNumberSetPagination(pagination.PageNumberPagination):
     page_size = 10
@@ -14,10 +35,10 @@ class PageNumberSetPagination(pagination.PageNumberPagination):
    #  ordering = 'id'
 
 class UoViewSet(viewsets.ModelViewSet):
-    search_fields = ['activity_kinds']
+    search_fields = ['address','activity_kinds','name','edrpou']
     filter_backends = (filters.SearchFilter,)
     serializer_class = UoSerializer
     queryset = Tbluo.objects.all()
     lookup_field = 'id'
     permission_classes = [permissions.AllowAny]
-    pagination_class = PageNumberSetPagination
+    pagination_class = CustomPagination
